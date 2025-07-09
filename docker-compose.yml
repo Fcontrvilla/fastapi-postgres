@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:14
+    restart: always
+    container_name: postgres_container
+    environment:
+      - POSTGRES_USER= ${POSTGRES_USER}
+      - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD}
+      - POSTGRES_DB= ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - mired
+
+
+  web:
+    
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jonhdoe@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: StrongPassword
+      PGADMIN_LISTEN_PORT: 8080
+      PGADMIN_CONFIG_PROXY_X_HOST_COUNT: 1
+      PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT: 1
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - mired
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  mired:
+    driver: bridge
